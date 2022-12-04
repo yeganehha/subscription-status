@@ -95,9 +95,9 @@ class PlatformsService
         return Platform::findById($id);
     }
 
-    public static function delete(Platform $platform) : bool
+    public static function deletePlatform(Platform $platform) : bool
     {
-        return $platform->delete();
+        return $platform->delete() ?? false;
     }
 
     /**
@@ -115,7 +115,7 @@ class PlatformsService
                 DB::rollBack();
                 throw new InvalidArgumentException("Platform [{$platform}] not found.");
             }
-            self::delete($platform);
+            self::deletePlatform($platform);
         }
         DB::commit();
         return true;

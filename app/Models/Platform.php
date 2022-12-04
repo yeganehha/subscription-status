@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 
 /**
@@ -58,6 +59,8 @@ class Platform extends Model
      * Find Platform
      * @param int $id
      * @return self
+     *
+     * @throws ModelNotFoundException
      */
     public static function findById(int $id) : Model
     {
