@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Platforms\PlatformInterface;
+use App\Services\PlatformsService;
 use Illuminate\Contracts\Validation\InvokableRule;
 
 class PlatformProvider implements InvokableRule
@@ -17,8 +18,8 @@ class PlatformProvider implements InvokableRule
      */
     public function __invoke($attribute, $value, $fail)
     {
-        if (is_string($value) and class_exists($value) and is_subclass_of($value, PlatformInterface::class)) {
-            $fail('The :attribute must be provider of any platform.');
+        if ( ! PlatformsService::isValidProvider($value)) {
+            $fail('The '.$value.' must be provider of any platform.');
         }
     }
 }

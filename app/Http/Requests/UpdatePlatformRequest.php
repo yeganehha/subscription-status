@@ -26,7 +26,7 @@ class UpdatePlatformRequest extends FormRequest
     {
         return [
             'name' => ['nullable' , 'string' , 'max:255'],
-            'provider' => ['required' , 'string' , PlatformProvider::class]
+            'provider' => ['required' , 'string' , new PlatformProvider()]
         ];
     }
 }
