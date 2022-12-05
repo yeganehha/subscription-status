@@ -144,14 +144,18 @@ class Run extends Model
 
     public function incrementExpiredApps(): int
     {
-        return self::query()->where('id',$this->id)
+        self::query()->where('id',$this->id)
             ->increment('expired_count');
+        $this->expired_count++;
+        return  $this->expired_count;
     }
 
     public function decrementTask() :int
     {
-        return self::query()->where('id',$this->id)
+        self::query()->where('id',$this->id)
             ->decrement('waiting_task');
+        $this->waiting_task--;
+        return  $this->waiting_task;
     }
 
     /**
