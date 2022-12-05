@@ -160,7 +160,7 @@ class AppsService
      * @param int|null $perPage
      * @return LengthAwarePaginator
      */
-    public static function searchPlatforms(int|null|string $id = null,null|string $uid = null ,string|null $name = null, string|StatusEnum|null $status = null, int|Platform|string|null $platform = null, int|bool|null $page,int|null $perPage = 10): LengthAwarePaginator
+    public static function search(int|null|string $id = null,null|string $uid = null ,string|null $name = null, string|StatusEnum|null $status = null, int|Platform|string|null $platform = null, int|bool|null $page,int|null $perPage = 10): LengthAwarePaginator
     {
         if ( is_string($id) )
             $id = (int)$id;

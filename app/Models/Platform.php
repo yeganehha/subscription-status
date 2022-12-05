@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Platforms\PlatformInterface;
 use App\Services\AppsService;
+use App\Services\PlatformsService;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use InvalidArgumentException;
 use Rebing\GraphQL\Support\Facades\GraphQL;
 
 /**
@@ -76,7 +78,7 @@ class Platform extends Model
                     ]
                 ],
                 'resolve' => function($root, $args) {
-                    return AppsService::searchPlatforms(
+                    return AppsService::search(
                     $args['id'] ?? null ,
                     $args['uid'] ?? null ,
                     $args['name'] ?? null,
@@ -95,6 +97,20 @@ class Platform extends Model
         ];
     }
 
+
+
+    /**
+     * return Provider of platform
+     *
+     * @return PlatformInterface
+     */
+    protected function provider_object(): PlatformInterface
+    {
+        $provider = $this->provider;
+        if ( PlatformsService::isValidProvider($provider) )
+            return  new ($provider)();
+        throw new InvalidArgumentException("Platform [{$provider}] not found.");
+    }
 
     /**
      * insert  new platform

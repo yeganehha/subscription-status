@@ -67,7 +67,7 @@ class ApplicationsQuery extends Query
 
     public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        return AppsService::searchPlatforms(
+        return AppsService::search(
                 $args['id'] ?? null ,
                 $args['uid'] ?? null ,
                 $args['name'] ?? null,
