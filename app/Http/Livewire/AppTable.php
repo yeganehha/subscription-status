@@ -52,6 +52,9 @@ class AppTable extends DataTableComponent
                 ->sortable(),
             Column::make("Status", "status")
                 ->searchable()
+                ->format(
+                    fn($value, $row, Column $column) => view('layouts.status', compact('value'))
+                )
                 ->sortable(),
             Column::make("Updated at", "updated_at")
                 ->sortable(),
@@ -67,7 +70,15 @@ class AppTable extends DataTableComponent
                         ->location(fn($row) => route('app.edit', $row))
                         ->attributes(function($row) {
                             return [
-                                'class' => 'underline text-blue-500 hover:no-underline',
+                                'class' => 'btn btn-outline-warning',
+                            ];
+                        }),
+                    LinkColumn::make('Subscriptions')
+                        ->title(fn($row) => trans('Subscriptions') )
+                        ->location(fn($row) => route('subscription.app.index', $row))
+                        ->attributes(function($row) {
+                            return [
+                                'class' => 'btn btn-outline-info',
                             ];
                         }),
                 ]),

@@ -60,7 +60,7 @@ class PlatformTable extends DataTableComponent
                         ->location(fn($row) => route('platform.edit', $row))
                         ->attributes(function($row) {
                             return [
-                                'class' => 'underline text-blue-500 hover:no-underline',
+                                'class' => 'btn btn-outline-warning',
                             ];
                         }),
                 ]),

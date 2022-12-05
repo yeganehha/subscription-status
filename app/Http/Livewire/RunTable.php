@@ -5,6 +5,8 @@ namespace App\Http\Livewire;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Run;
+use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
+use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 
 class RunTable extends DataTableComponent
 {
@@ -35,6 +37,23 @@ class RunTable extends DataTableComponent
                 ->format(
                     fn($value, $row, Column $column) => $value->format('Y-m-d')
                 ),
+
+            ButtonGroupColumn::make('Actions')
+                ->attributes(function($row) {
+                    return [
+                        'class' => 'space-x-2',
+                    ];
+                })
+                ->buttons([
+                    LinkColumn::make('Subscriptions')
+                        ->title(fn($row) => trans('Subscriptions') )
+                        ->location(fn($row) => route('subscription.run.index', $row))
+                        ->attributes(function($row) {
+                            return [
+                                'class' => 'btn btn-outline-info',
+                            ];
+                        }),
+                ]),
         ];
     }
 }
