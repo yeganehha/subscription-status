@@ -12,7 +12,7 @@ class IOSPlatform extends \App\Platforms\Platform
      *
      * @return int number of seconds for delay and re-check
      */
-    public static function reCheckStatusOnErrorOccurred(): int
+    public function reCheckStatusOnErrorOccurred(): int
     {
         return parent::reCheckStatusOnErrorOccurred();
     }

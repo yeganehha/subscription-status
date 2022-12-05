@@ -12,7 +12,7 @@ class AndroidPlatform extends \App\Platforms\Platform
      *Platforms\Providers
      * @return int number of seconds for delay and re-check
      */
-    public static function reCheckStatusOnErrorOccurred(): int
+    public function reCheckStatusOnErrorOccurred(): int
     {
         return parent::reCheckStatusOnErrorOccurred();
     }
