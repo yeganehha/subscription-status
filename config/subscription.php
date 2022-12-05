@@ -5,7 +5,7 @@ use App\Enums\StatusEnum;
 return [
     'active_days' => [
         'friday',
-        6,
+        5,
         'Friday',
         'fri'
     ],

@@ -64,7 +64,8 @@ class CheckService
             $lastStatus = StatusEnum::getFromString($lastStatus);
         }
 
-        $page = max($page , 1);
+        if ( $page !== false)
+            $page = max($page , 1);
         $perPage = min($perPage , 50);
         $perPage = max($perPage , 10);
         return Subscription::search($id ,$lastStatus , $status , $app_id , $run_id ,$page,$perPage);
@@ -100,7 +101,8 @@ class CheckService
             $status = RunStatusEnum::getFromString($status);
         }
 
-        $page = max($page , 1);
+        if ( $page !== false)
+            $page = max($page , 1);
         $perPage = min($perPage , 50);
         $perPage = max($perPage , 10);
         return Run::search($id ,$date , $last ,$status ,$page,$perPage);
@@ -209,6 +211,6 @@ class CheckService
         if ($subscriptions->count() == 0 ) {
             $run->finish();
         } else
-            dispatch(new SendEmailJob($subscriptions->pluck('app_id') , config('subscription') ));
+            dispatch(new SendEmailJob($subscriptions->pluck('app_id') , $run, config('subscription') ));
     }
 }

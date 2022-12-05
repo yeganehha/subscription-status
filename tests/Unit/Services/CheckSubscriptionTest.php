@@ -69,11 +69,9 @@ class CheckSubscriptionTest extends TestCase
         $numberOfJobs = Queue::size();
         CheckService::check($app,$round);
         $lastJob = DB::table('jobs')->orderByDesc('id')->first();
-        $runAt = unserialize(json_decode($lastJob->payload)->data->command)->delay;
-        $totalDuration = now()->diffInSeconds($runAt);
         $newNumberOfJobs = Queue::size();
         $this->assertEquals(++$numberOfJobs , $newNumberOfJobs);
-        $this->assertEquals(++$totalDuration , $platforms[0]->provider_object()->reCheckStatusOnErrorOccurred());
+        $this->assertEquals($lastJob->available_at - $lastJob->created_at , $platforms[0]->provider_object()->reCheckStatusOnErrorOccurred());
     }
 
     public function testSuccessHttpButStatusNotValid()
@@ -140,14 +138,10 @@ class CheckSubscriptionTest extends TestCase
         $lastJob = DB::table('jobs')->orderByDesc('id')->first();
         CheckService::check($app2,$round);
         $lastJob2 = DB::table('jobs')->orderByDesc('id')->first();
-        $runAt = unserialize(json_decode($lastJob->payload)->data->command)->delay;
-        $runAt2 = unserialize(json_decode($lastJob2->payload)->data->command)->delay;
-        $totalDuration = now()->diffInSeconds($runAt);
-        $totalDuration2 = now()->diffInSeconds($runAt2);
         $newNumberOfJobs = Queue::size();
         $this->assertEquals($numberOfJobs + 2 , $newNumberOfJobs);
-        $this->assertEquals(++$totalDuration , $platforms[0]->provider_object()->reCheckStatusOnErrorOccurred());
-        $this->assertEquals(++$totalDuration2 , $platforms[1]->provider_object()->reCheckStatusOnErrorOccurred());
+        $this->assertEquals($lastJob->available_at - $lastJob->created_at , $platforms[0]->provider_object()->reCheckStatusOnErrorOccurred());
+        $this->assertEquals($lastJob2->available_at - $lastJob2->created_at , $platforms[1]->provider_object()->reCheckStatusOnErrorOccurred());
     }
 
     public function testCheckStatusChangeFromPendingToActive()
