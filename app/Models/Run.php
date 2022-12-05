@@ -41,7 +41,7 @@ class Run extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn ($value , $attributes) => 'Run At '.Carbon::make($attributes['created_at'])->isoFormat('dddd DDDo MMMM, YYYY'),
+            get: fn ($value , $attributes) => 'Run At '.Carbon::make($attributes['created_at'])->isoFormat('dddd Do MMMM, YYYY'),
         );
     }
 
