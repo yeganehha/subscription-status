@@ -3,6 +3,8 @@
     "platform": "Platform",
     "apps": "Apps",
     "app": "App",
+    "runs": "Rounds Of check",
+    "run": "Round Of check",
     "return_back": "Go back",
     "submit": "Submit",
     "add_new": "Add new :object",

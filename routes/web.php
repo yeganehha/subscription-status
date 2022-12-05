@@ -27,4 +27,6 @@ Route::group(['middleware'=>['auth']] , function() {
 
    Route::resource('app' , \App\Http\Controllers\AppController::class)
     ->except(['view','destroy']);
+
+   Route::get('runs' , [\App\Http\Controllers\RunController::class , 'index'])->name('run.index');
 });
