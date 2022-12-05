@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([ 'prefix' =>'rest' ,  'as' => 'api'] , function (){
+    Route::get('platforms' , [ \App\Http\Controllers\Api\IndexController::class , 'platforms'])
+        ->name('platforms');
+    Route::get('platforms/{platform}/apps' , [ \App\Http\Controllers\Api\IndexController::class , 'apps'])
+        ->name('apps');
+    Route::get('platforms/{platform}/app/{app}/subscriptions' , [ \App\Http\Controllers\Api\IndexController::class , 'appSubscription'])
+        ->name('apps.subscriptions');
+    Route::get('rounds' , [ \App\Http\Controllers\Api\IndexController::class , 'rounds'])
+        ->name('rounds');
+    Route::get('rounds/last' , [ \App\Http\Controllers\Api\IndexController::class , 'lastRound'])
+        ->name('rounds.last');
+    Route::get('rounds/{run}/subscriptions' , [ \App\Http\Controllers\Api\IndexController::class , 'runSubscription'])
+        ->name('rounds.subscriptions');
 });
