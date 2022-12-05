@@ -169,7 +169,7 @@ return [
      * Config for GraphiQL (see (https://github.com/graphql/graphiql).
      */
     'graphiql' => [
-        'prefix' => 'api/document/graphiql', // Do NOT use a leading slash
+        'prefix' => 'api/documentation/graphiql', // Do NOT use a leading slash
         'controller' => \Rebing\GraphQL\GraphQLController::class . '@graphiql',
         'middleware' => [],
         'view' => 'graphql::graphiql',
