@@ -95,6 +95,7 @@ class Run extends Model
                 'resolve' => function($root, $args) {
                     return CheckService::searchSubscription(
                         $args['id'] ?? null,
+                        null,
                         $args['status'] ?? null,
                         null,$root->id,$args['page'] ?? 1 , $args['limit'] ?? 10);
                 },

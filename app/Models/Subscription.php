@@ -17,6 +17,7 @@ use Rebing\GraphQL\Support\Facades\GraphQL;
  * @property int $id
  * @property int app_id
  * @property int run_id
+ * @property StatusEnum last_status
  * @property StatusEnum status
  * @property App app
  * @property Run run
@@ -82,6 +83,7 @@ class Subscription extends Model
 
     /**
      * @param int|null $id
+     * @param StatusEnum|null $lastStatus
      * @param StatusEnum|null $status
      * @param int|null $app_id
      * @param int|null $run_id
@@ -89,7 +91,7 @@ class Subscription extends Model
      * @param int|null $perPage
      * @return Collection|LengthAwarePaginator
      */
-    public static function search(int|null $id, StatusEnum|null $status, int|null $app_id, int|null $run_id, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator
+    public static function search(int|null $id, StatusEnum|null $lastStatus, StatusEnum|null $status, int|null $app_id, int|null $run_id, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator
     {
         $result = self::query()
             ->when($id , function ($query) use ($id){
@@ -100,6 +102,9 @@ class Subscription extends Model
             })
             ->when($status , function ($query) use ($status){
                 $query->where('status' , $status);
+            })
+            ->when($lastStatus , function ($query) use ($lastStatus){
+                $query->where('last_status' , $lastStatus);
             })
             ->when($run_id , function ($query) use ($run_id){
                 $query->where('run_id' , $run_id);
