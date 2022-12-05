@@ -12,7 +12,7 @@ return [
 
     'email_when' => [
         'from' => StatusEnum::Active,
-        'to' => StatusEnum::Pending,
+        'to' => StatusEnum::Expired,
     ],
 
     'email' => [
