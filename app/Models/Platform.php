@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -67,4 +69,17 @@ class Platform extends Model
         return self::query()->findOrFail($id);
     }
 
+    public function apps(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(App::class);
+    }
+
+    /**
+     * search and return active platforms
+     * @return Collection
+     */
+    public static function getActivePlatforms():Collection
+    {
+        return self::query()->latest()->get();
+    }
 }

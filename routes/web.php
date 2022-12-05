@@ -24,4 +24,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware'=>['auth']] , function() {
    Route::resource('platform' , \App\Http\Controllers\PlatformController::class)
     ->except(['view','destroy']);
+
+   Route::resource('app' , \App\Http\Controllers\AppController::class)
+    ->except(['view','destroy']);
 });

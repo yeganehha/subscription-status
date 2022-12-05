@@ -1,6 +1,8 @@
 {
     "platforms": "Platforms",
     "platform": "Platform",
+    "apps": "Apps",
+    "app": "App",
     "return_back": "Go back",
     "submit": "Submit",
     "add_new": "Add new :object",

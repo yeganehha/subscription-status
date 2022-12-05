@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Platform;
 use App\Platforms\PlatformInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -65,32 +66,30 @@ class PlatformsService
     /**
      * update platform data
      *
-     * @param mixed $platform
+     * @param int|Platform $platform
      * @param string $name
      * @param string $provider
      * @return Platform
      * @throws \Throwable
      */
-    public static function update(mixed $platform, string $name, string $provider): Platform
+    public static function update(int|Platform $platform, string $name, string $provider): Platform
     {
         if ( is_int($platform) )
             $platform = self::findById($platform);
 
-        if(! ( is_object($platform) and $platform instanceof Platform) )
-            throw new InvalidArgumentException("Platform [".$platform::class."] not found.");
-
         if ( ! self::isValidProvider($provider))
             throw new InvalidArgumentException("Platform [{$provider}] not found.");
 
-        return $platform->edit($name , $provider);
+        return ($platform)->edit($name , $provider);
     }
 
     /**
      * Find Platform by id
      * @param int $id
-     * @return Platform|null
+     * @return Platform
+     * @throws ModelNotFoundException
      */
-    public static function findById(int $id) : Platform|null
+    public static function findById(int $id) : Platform
     {
         return Platform::findById($id);
     }
@@ -110,7 +109,7 @@ class PlatformsService
         DB::beginTransaction();
         foreach ($ids as $id)
         {
-            $platform = self::findById(intval($id));
+            $platform = self::findById((int)$id);
             if ( $platform == null ) {
                 DB::rollBack();
                 throw new InvalidArgumentException("Platform [{$platform}] not found.");
@@ -119,5 +118,15 @@ class PlatformsService
         }
         DB::commit();
         return true;
+    }
+
+
+    /**
+     * Return list of platforms
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function listPlatforms(): Collection
+    {
+        return Platform::getActivePlatforms();
     }
 }

@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory(9)->create();
 
         $this->call(PlatformSeeder::class);
+        $this->call(AppSeeder::class);
     }
 }
