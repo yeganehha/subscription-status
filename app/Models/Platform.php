@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use GraphQL\Type\Definition\Type;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +26,28 @@ class Platform extends Model
         'name',
         'provider'
     ];
+
+    public static function GraphQLType(): array
+    {
+        return [
+            'id' => [
+                'type' => Type::id(),
+                'description' => 'The auto increment Platform Id.'
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'description' => 'The name of Platform.'
+            ],
+            'updated_at' => [
+                'type' => Type::string(),
+                'description' => 'The Date and time of last modification of Platform.'
+            ],
+            'created_at' => [
+                'type' => Type::string(),
+                'description' => 'The Date and time of Platform created.'
+            ]
+        ];
+    }
 
 
     /**
@@ -76,10 +100,23 @@ class Platform extends Model
 
     /**
      * search and return active platforms
-     * @return Collection
+     * @param int|null $id
+     * @param string|null $name
+     * @param int|bool|null $page
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
      */
-    public static function getActivePlatforms():Collection
+    public static function getActivePlatforms(int|null $id = null,string|null $name = null,int|bool|null $page,int|null $perPage = null):Collection|LengthAwarePaginator
     {
-        return self::query()->latest()->get();
+        $result = self::query()
+            ->when($id , function ($query) use ($id){
+                $query->where('id' , $id);
+            })
+            ->when($name , function ($query) use ($name){
+                $query->where('name' , 'Like' , '%'. $name.'%');
+            })->latest();
+        if ( $page === false )
+            return  $result->get();
+        return $result->paginate($perPage,['*'],'page',$page);
     }
 }

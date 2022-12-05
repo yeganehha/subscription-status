@@ -75,14 +75,15 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
-                // ExampleQuery::class,
+                \App\GraphQL\Queries\PlatformQuery::class,
+                \App\GraphQL\Queries\PlatformsQuery::class,
             ],
             'mutation' => [
                 // ExampleMutation::class,
             ],
             // The types only available in this schema
             'types' => [
-                // ExampleType::class,
+                \App\GraphQL\Types\PlatformType::class,
             ],
 
             // Laravel HTTP middleware
@@ -161,7 +162,7 @@ return [
      * Config for GraphiQL (see (https://github.com/graphql/graphiql).
      */
     'graphiql' => [
-        'prefix' => 'graphiql', // Do NOT use a leading slash
+        'prefix' => 'api/document/graphiql', // Do NOT use a leading slash
         'controller' => \Rebing\GraphQL\GraphQLController::class . '@graphiql',
         'middleware' => [],
         'view' => 'graphql::graphiql',
