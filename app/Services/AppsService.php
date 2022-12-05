@@ -6,6 +6,7 @@ use App\Enums\StatusEnum;
 use App\Models\App;
 use App\Models\Platform;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -158,9 +159,9 @@ class AppsService
      * @param int|Platform|string|null $platform
      * @param int|bool|null $page
      * @param int|null $perPage
-     * @return LengthAwarePaginator
+     * @return Collection|LengthAwarePaginator
      */
-    public static function search(int|null|string $id = null,null|string $uid = null ,string|null $name = null, string|StatusEnum|null $status = null, int|Platform|string|null $platform = null, int|bool|null $page,int|null $perPage = 10): LengthAwarePaginator
+    public static function search(int|null|string $id = null,null|string $uid = null ,string|null $name = null, string|StatusEnum|null $status = null, int|Platform|string|null $platform = null, int|bool|null $page,int|null $perPage = 10): Collection|LengthAwarePaginator
     {
         if ( is_string($id) )
             $id = (int)$id;
@@ -176,7 +177,8 @@ class AppsService
             $status = StatusEnum::getFromString($status);
         }
 
-        $page = max($page , 1);
+        if ( $page !== false)
+            $page = max($page , 1);
         $perPage = min($perPage , 50);
         $perPage = max($perPage , 10);
         return App::getApplications($id , $uid ,$name , $status,$platform_id ,$page,$perPage);
