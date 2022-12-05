@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Services\AppsService;
+use GraphQL\Type\Definition\Type;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use Rebing\GraphQL\Support\Facades\GraphQL;
 
 /**
  * @property int $id
@@ -24,6 +28,72 @@ class Platform extends Model
         'name',
         'provider'
     ];
+
+    public static function GraphQLType(): array
+    {
+        return [
+            'id' => [
+                'type' => Type::id(),
+                'description' => 'The auto increment Platform Id.'
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'description' => 'The name of Platform.'
+            ],
+            'apps' => [
+                'type'          => GraphQL::paginate('Application'),
+                'description'   => 'A list of application supported by the platform',
+                'args'          => [
+                    'id' => [
+                        'name' => 'id',
+                        'description' => 'Id of Application.',
+                        'type' => Type::id()
+                    ],
+                    'uid' => [
+                        'name' => 'uid',
+                        'description' => 'UId of Application.',
+                        'type' => Type::string()
+                    ],
+                    'name' => [
+                        'name' => 'name',
+                        'description' => 'search special name.',
+                        'type' => Type::string()
+                    ],
+                    'status' => [
+                        'name' => 'status',
+                        'description' => 'search special status.',
+                        'type' => Type::string()
+                    ],
+                    'limit' => [
+                        'name' => 'limit',
+                        'description' => 'How much item show per each page.( between 10 & 50. default: 10)',
+                        'type' => Type::int()
+                    ],
+                    'page' => [
+                        'name' => 'page',
+                        'description' => 'page number',
+                        'type' => Type::int()
+                    ]
+                ],
+                'resolve' => function($root, $args) {
+                    return AppsService::searchPlatforms(
+                    $args['id'] ?? null ,
+                    $args['uid'] ?? null ,
+                    $args['name'] ?? null,
+                    $args['status'] ?? null,
+                    $root->id,$args['page'] ?? 1 , $args['limit'] ?? 10);
+                },
+            ],
+            'updated_at' => [
+                'type' => Type::string(),
+                'description' => 'The Date and time of last modification of Platform.'
+            ],
+            'created_at' => [
+                'type' => Type::string(),
+                'description' => 'The Date and time of Platform created.'
+            ]
+        ];
+    }
 
 
     /**
@@ -76,10 +146,23 @@ class Platform extends Model
 
     /**
      * search and return active platforms
-     * @return Collection
+     * @param int|null $id
+     * @param string|null $name
+     * @param int|bool|null $page
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
      */
-    public static function getActivePlatforms():Collection
+    public static function getActivePlatforms(int|null $id = null,string|null $name = null,int|bool|null $page,int|null $perPage = null):Collection|LengthAwarePaginator
     {
-        return self::query()->latest()->get();
+        $result = self::query()
+            ->when($id , function ($query) use ($id){
+                $query->where('id' , $id);
+            })
+            ->when($name , function ($query) use ($name){
+                $query->where('name' , 'Like' , '%'. $name.'%');
+            })->latest();
+        if ( $page === false )
+            return  $result->get();
+        return $result->paginate($perPage,['*'],'page',$page);
     }
 }
