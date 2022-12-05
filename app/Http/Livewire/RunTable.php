@@ -31,6 +31,12 @@ class RunTable extends DataTableComponent
                 ->sortable(),
             Column::make("Expired count", "expired_count")
                 ->sortable(),
+            Column::make("Status", "status")
+                ->searchable()
+                ->format(
+                    fn($value, $row, Column $column) => view('layouts.status', compact('value'))
+                )
+                ->sortable(),
             Column::make("Created at", "created_at")
                 ->searchable()
                 ->sortable()

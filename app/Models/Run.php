@@ -18,6 +18,8 @@ use Rebing\GraphQL\Support\Facades\GraphQL;
 /**
  * @property int $id
  * @property int expired_count
+ * @property int waiting_task
+ * @property RunStatusEnum status
  * @property string name
  * @property Collection subscriptions
  * @property Carbon $created_at
@@ -57,6 +59,13 @@ class Run extends Model
             'expired_count' => [
                 'type' => Type::int(),
                 'description' => 'Number of application that get Expire Status in that\'s run.'
+            ],
+            'status' => [
+                'type' => Type::string(),
+                'description' => 'Status of round',
+                'resolve' => function($root, $args) {
+                    return RunStatusEnum::toString($root->status);
+                }
             ],
             'subscriptions' => [
                 'type'          => GraphQL::paginate('Subscription'),
@@ -108,11 +117,12 @@ class Run extends Model
      * @param int|null $id
      * @param Carbon|null $date
      * @param bool $last
+     * @param RunStatusEnum|null $status
      * @param int|bool|null $page
      * @param int|null $perPage
      * @return Collection|LengthAwarePaginator|Run
      */
-    public static function search(int|null $id, Carbon|null $date, bool $last, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator|Run
+    public static function search(int|null $id, Carbon|null $date, bool $last,RunStatusEnum|null $status = null, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator|Run
     {
         $result = self::query()
             ->when($id , function ($query) use ($id){
@@ -120,6 +130,9 @@ class Run extends Model
             })
             ->when($date , function ($query) use ($date){
                 $query->whereDate('created_at' , $date);
+            })
+            ->when($status , function ($query) use ($status){
+                $query->whereDate('status' , $status);
             })->latest();
         if ( $last )
             return $result->limit(1)->first();
@@ -151,9 +164,11 @@ class Run extends Model
      * @return self
      * @throws \Throwable
      */
-    public static function insert(): self
+    public static function insert(int $numberOFTask): self
     {
         $platform = new self();
+        $platform->waiting_task = $numberOFTask;
+        $platform->status = RunStatusEnum::Pending;
         $platform->saveOrFail();
         return $platform;
     }
