@@ -124,9 +124,10 @@ class App extends Model
      * @param int|null $platform_id
      * @param int|bool|null $page
      * @param int|null $perPage
+     * @param array $with
      * @return Collection|LengthAwarePaginator
      */
-    public static function getApplications(int|null $id, string|null $uid, string|null $name, StatusEnum|null $status, int|null $platform_id, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator
+    public static function getApplications(int|null $id, string|null $uid, string|null $name, StatusEnum|null $status, int|null $platform_id, int|bool|null $page = false, int|null $perPage = null , array $with = []): Collection|LengthAwarePaginator
     {
         $result = self::query()
             ->when($id , function ($query) use ($id){
@@ -143,6 +144,9 @@ class App extends Model
             })
             ->when($platform_id , function ($query) use ($platform_id){
                 $query->where('platform_id' , $platform_id);
+            })
+            ->when($with != [] , function ($query) use ($with){
+                $query->with($with);
             })->latest();
         if ( $page === false )
             return  $result->get();
