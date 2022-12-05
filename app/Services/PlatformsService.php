@@ -129,7 +129,7 @@ class PlatformsService
      */
     public static function listPlatforms(): Collection
     {
-        return Platform::getActivePlatforms();
+        return Platform::getActivePlatforms(null , null ,false);
     }
 
     /**

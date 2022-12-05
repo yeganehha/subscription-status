@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\StatusEnum;
 use App\Models\App;
 use App\Models\Platform;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -39,12 +40,12 @@ class AppsService
 
     /**
      * Find application with UID
-     * @param int $id
+     * @param int|string $id
      * @return App|null
      */
-    public static function getAppByID(int $id) : App|null
+    public static function getAppByID(int|string $id) : App|null
     {
-        return App::findByAttribute($id);
+        return App::findByAttribute( (int) $id);
     }
 
     /**
@@ -110,12 +111,7 @@ class AppsService
             throw new InvalidArgumentException("Application not found.");
 
         if( is_string($status)){
-            $status = ucfirst(strtolower($status));
-            $reflection = new \ReflectionEnum(StatusEnum::class);
-            if ( $reflection->hasConstant( $status ) ) {
-                $status =  $reflection->getConstant($status);
-            } else
-                throw new InvalidArgumentException("[{$status}] is not valid status!");
+            $status = StatusEnum::getFromString($status);
         }
         return ($app)->setStatus($status);
     }
@@ -150,5 +146,39 @@ class AppsService
         }
         DB::commit();
         return true;
+    }
+
+
+    /**
+     * search application
+     * @param int|string|null $id
+     * @param string|null $uid
+     * @param string|null $name
+     * @param string|StatusEnum|null $status
+     * @param int|Platform|string|null $platform
+     * @param int|bool|null $page
+     * @param int|null $perPage
+     * @return LengthAwarePaginator
+     */
+    public static function searchPlatforms(int|null|string $id = null,null|string $uid = null ,string|null $name = null, string|StatusEnum|null $status = null, int|Platform|string|null $platform = null, int|bool|null $page,int|null $perPage = 10): LengthAwarePaginator
+    {
+        if ( is_string($id) )
+            $id = (int)$id;
+
+        $platform_id = null ;
+        if ( is_string($platform) or is_int($platform) )
+            $platform_id = PlatformsService::findById($platform)->id;
+        elseif ($platform instanceof Platform)
+            $platform_id = $platform->id;
+
+
+        if( is_string($status)){
+            $status = StatusEnum::getFromString($status);
+        }
+
+        $page = max($page , 1);
+        $perPage = min($perPage , 50);
+        $perPage = max($perPage , 10);
+        return App::getApplications($id , $uid ,$name , $status,$platform_id ,$page,$perPage);
     }
 }

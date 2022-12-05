@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\AppsService;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use Rebing\GraphQL\Support\Facades\GraphQL;
 
 /**
  * @property int $id
@@ -37,6 +39,26 @@ class Platform extends Model
             'name' => [
                 'type' => Type::string(),
                 'description' => 'The name of Platform.'
+            ],
+            'apps' => [
+                'type'          => GraphQL::paginate('Application'),
+                'description'   => 'A list of application supported by the platform',
+                'args'          => [
+                    'limit' => [
+                        'name' => 'limit',
+                        'description' => 'How much item show per each page.( between 10 & 50. default: 10)',
+                        'type' => Type::int()
+                    ],
+                    'page' => [
+                        'name' => 'page',
+                        'description' => 'page number',
+                        'type' => Type::int()
+                    ]
+                ],
+                'resolve' => function($root, $args) {
+                    // this gives n+1 problem
+                    return AppsService::searchPlatforms(null,null,null,null,$root->id,$args['page'] ?? 1 , $args['limit'] ?? 10);
+                },
             ],
             'updated_at' => [
                 'type' => Type::string(),

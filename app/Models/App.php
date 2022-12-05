@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use App\Enums\StatusEnum;
+use App\Services\PlatformsService;
+use GraphQL\Type\Definition\Type;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
+use Rebing\GraphQL\Support\Facades\GraphQL;
 
 /**
  * @property int $id
@@ -32,6 +36,81 @@ class App extends Model
         'platform_id' => 'int',
         'status' => StatusEnum::class
     ];
+
+    public static function GraphQLType() :array
+    {
+        return [
+            'id' => [
+                'type' => Type::id(),
+                'description' => 'The auto increment application Id.'
+            ],
+            'uid' => [
+                'type' => Type::string(),
+                'description' => 'The Unique ID of application.'
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'description' => 'The name of application.'
+            ],
+            'status' => [
+                'type' => Type::string(),
+                'description' => 'Last Status of application'
+            ],
+            'platform_id' => [
+                'type' => Type::id(),
+                'description' => 'The platform id of application.'
+            ],
+            'platform' => [
+                'type'          => GraphQL::type('Platform'),
+                'description'   => 'Platform of this application',
+                'resolve' => function($root, $args) {
+                    return PlatformsService::findById($root->platform_id);
+                },
+            ],
+            'updated_at' => [
+                'type' => Type::string(),
+                'description' => 'The Date and time of last modification of Platform.'
+            ],
+            'created_at' => [
+                'type' => Type::string(),
+                'description' => 'The Date and time of Platform created.'
+            ]
+        ];
+    }
+
+
+    /**
+     * @param int|null $id
+     * @param string|null $uid
+     * @param string|null $name
+     * @param StatusEnum|null $status
+     * @param int|null $platform_id
+     * @param int|bool|null $page
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
+     */
+    public static function getApplications(int|null $id, string|null $uid, string|null $name, StatusEnum|null $status, int|null $platform_id, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator
+    {
+        $result = self::query()
+            ->when($id , function ($query) use ($id){
+                $query->where('id' , $id);
+            })
+            ->when($uid , function ($query) use ($uid){
+                $query->where('uid' , $uid);
+            })
+            ->when($name , function ($query) use ($name){
+                $query->where('name' , 'Like' , '%'. $name.'%');
+            })
+            ->when($status , function ($query) use ($status){
+                $query->where('status' , $status);
+            })
+            ->when($platform_id , function ($query) use ($platform_id){
+                $query->where('platform_id' , $platform_id);
+            })->latest();
+        if ( $page === false )
+            return  $result->get();
+        return $result->paginate($perPage,['*'],'page',$page);
+    }
 
     public function platform(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

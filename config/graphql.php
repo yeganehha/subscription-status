@@ -77,6 +77,8 @@ return [
             'query' => [
                 \App\GraphQL\Queries\PlatformQuery::class,
                 \App\GraphQL\Queries\PlatformsQuery::class,
+                \App\GraphQL\Queries\ApplicationQuery::class,
+                \App\GraphQL\Queries\ApplicationsQuery::class,
             ],
             'mutation' => [
                 // ExampleMutation::class,
@@ -84,6 +86,7 @@ return [
             // The types only available in this schema
             'types' => [
                 \App\GraphQL\Types\PlatformType::class,
+                \App\GraphQL\Types\ApplicationType::class,
             ],
 
             // Laravel HTTP middleware
