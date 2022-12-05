@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\StatusEnum;
+use App\Services\CheckService;
 use App\Services\PlatformsService;
 use GraphQL\Type\Definition\Type;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -54,7 +55,10 @@ class App extends Model
             ],
             'status' => [
                 'type' => Type::string(),
-                'description' => 'Last Status of application'
+                'description' => 'Last Status of application',
+                'resolve' => function($root, $args) {
+                    return StatusEnum::toString($root->status);
+                }
             ],
             'platform_id' => [
                 'type' => Type::id(),
@@ -65,6 +69,38 @@ class App extends Model
                 'description'   => 'Platform of this application',
                 'resolve' => function($root, $args) {
                     return PlatformsService::findById($root->platform_id);
+                },
+            ],
+            'subscriptions' => [
+                'type'          => GraphQL::paginate('Subscription'),
+                'description'   => 'A subscriptions history of this run.',
+                'args'          => [
+                    'id' => [
+                        'name' => 'id',
+                        'description' => 'Id of Subscription.',
+                        'type' => Type::id()
+                    ],
+                    'status' => [
+                        'name' => 'status',
+                        'description' => 'search special status.',
+                        'type' => Type::string()
+                    ],
+                    'limit' => [
+                        'name' => 'limit',
+                        'description' => 'How much item show per each page.( between 10 & 50. default: 10)',
+                        'type' => Type::int()
+                    ],
+                    'page' => [
+                        'name' => 'page',
+                        'description' => 'page number',
+                        'type' => Type::int()
+                    ]
+                ],
+                'resolve' => function($root, $args) {
+                    return CheckService::searchSubscription(
+                        $args['id'] ?? null,
+                        $args['status'] ?? null,
+                        $root->id,null,$args['page'] ?? 1 , $args['limit'] ?? 10);
                 },
             ],
             'updated_at' => [

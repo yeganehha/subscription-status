@@ -3,8 +3,15 @@
 namespace App\Models;
 
 use App\Enums\StatusEnum;
+use App\Services\AppsService;
+use App\Services\CheckService;
+use App\Services\PlatformsService;
+use GraphQL\Type\Definition\Type;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Rebing\GraphQL\Support\Facades\GraphQL;
 
 /**
  * @property int $id
@@ -31,6 +38,74 @@ class Subscription extends Model
         'run_id' => 'int',
         'status' => StatusEnum::class
     ];
+
+    public static function GraphQLType(): array
+    {
+        return [
+            'id' => [
+                'type' => Type::id(),
+                'description' => 'The auto increment Subscription Id.'
+            ],
+            'app_id' => [
+                'type' => Type::id(),
+                'description' =>  'The applications id.'
+            ],
+            'status' => [
+                'type' => Type::string(),
+                'description' => 'Last Status of application',
+                'resolve' => function($root, $args) {
+                    return StatusEnum::toString($root->status);
+                }
+            ],
+            'run_id' => [
+                'type' => Type::id(),
+                'description' => 'The round id of checking applications.'
+            ],
+            'application' => [
+                'type'          => GraphQL::type('Application'),
+                'description'   => 'Information of application.',
+                'resolve' => function($root, $args) {
+                    return AppsService::getAppByID($root->app_id);
+                },
+            ],
+            'run' => [
+                'type'          => GraphQL::type('Run'),
+                'description'   => 'Information of round that\'s checked on',
+                'resolve' => function($root, $args) {
+                    return CheckService::getRunByID($root->run_id);
+                },
+            ]
+        ];
+    }
+
+    /**
+     * @param int|null $id
+     * @param StatusEnum|null $status
+     * @param int|null $app_id
+     * @param int|null $run_id
+     * @param int|bool|null $page
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
+     */
+    public static function search(int|null $id, StatusEnum|null $status, int|null $app_id, int|null $run_id, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator
+    {
+        $result = self::query()
+            ->when($id , function ($query) use ($id){
+                $query->where('id' , $id);
+            })
+            ->when($app_id , function ($query) use ($app_id){
+                $query->where('app_id' , $app_id);
+            })
+            ->when($status , function ($query) use ($status){
+                $query->where('status' , $status);
+            })
+            ->when($run_id , function ($query) use ($run_id){
+                $query->where('run_id' , $run_id);
+            })->orderByDesc('id');
+        if ( $page === false )
+            return  $result->get();
+        return $result->paginate($perPage,['*'],'page',$page);
+    }
 
     public function run(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

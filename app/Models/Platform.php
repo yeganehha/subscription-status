@@ -44,6 +44,26 @@ class Platform extends Model
                 'type'          => GraphQL::paginate('Application'),
                 'description'   => 'A list of application supported by the platform',
                 'args'          => [
+                    'id' => [
+                        'name' => 'id',
+                        'description' => 'Id of Application.',
+                        'type' => Type::id()
+                    ],
+                    'uid' => [
+                        'name' => 'uid',
+                        'description' => 'UId of Application.',
+                        'type' => Type::string()
+                    ],
+                    'name' => [
+                        'name' => 'name',
+                        'description' => 'search special name.',
+                        'type' => Type::string()
+                    ],
+                    'status' => [
+                        'name' => 'status',
+                        'description' => 'search special status.',
+                        'type' => Type::string()
+                    ],
                     'limit' => [
                         'name' => 'limit',
                         'description' => 'How much item show per each page.( between 10 & 50. default: 10)',
@@ -56,8 +76,12 @@ class Platform extends Model
                     ]
                 ],
                 'resolve' => function($root, $args) {
-                    // this gives n+1 problem
-                    return AppsService::searchPlatforms(null,null,null,null,$root->id,$args['page'] ?? 1 , $args['limit'] ?? 10);
+                    return AppsService::searchPlatforms(
+                    $args['id'] ?? null ,
+                    $args['uid'] ?? null ,
+                    $args['name'] ?? null,
+                    $args['status'] ?? null,
+                    $root->id,$args['page'] ?? 1 , $args['limit'] ?? 10);
                 },
             ],
             'updated_at' => [

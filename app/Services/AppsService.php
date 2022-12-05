@@ -39,7 +39,7 @@ class AppsService
     }
 
     /**
-     * Find application with UID
+     * Find application with ID
      * @param int|string $id
      * @return App|null
      */

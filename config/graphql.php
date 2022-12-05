@@ -79,6 +79,8 @@ return [
                 \App\GraphQL\Queries\PlatformsQuery::class,
                 \App\GraphQL\Queries\ApplicationQuery::class,
                 \App\GraphQL\Queries\ApplicationsQuery::class,
+                \App\GraphQL\Queries\RunQuery::class,
+                \App\GraphQL\Queries\RunsQuery::class,
             ],
             'mutation' => [
                 // ExampleMutation::class,
@@ -87,6 +89,8 @@ return [
             'types' => [
                 \App\GraphQL\Types\PlatformType::class,
                 \App\GraphQL\Types\ApplicationType::class,
+                \App\GraphQL\Types\RunType::class,
+                \App\GraphQL\Types\SubscriptionType::class,
             ],
 
             // Laravel HTTP middleware
