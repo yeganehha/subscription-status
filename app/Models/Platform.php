@@ -104,7 +104,7 @@ class Platform extends Model
      *
      * @return PlatformInterface
      */
-    protected function provider_object(): PlatformInterface
+    public function provider_object(): PlatformInterface
     {
         $provider = $this->provider;
         if ( PlatformsService::isValidProvider($provider) )
