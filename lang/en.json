@@ -3,6 +3,8 @@
     "platform": "Platform",
     "apps": "Apps",
     "app": "App",
+    "subscription": "Subscription history of :object",
+    "Subscriptions": "Subscriptions",
     "runs": "Rounds Of check",
     "run": "Round Of check",
     "return_back": "Go back",

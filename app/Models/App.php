@@ -6,6 +6,7 @@ use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * @property int $platform_id
  * @property Platform $platform
  * @property StatusEnum $status
+ * @property Collection subscriptions
  */
 class App extends Model
 {
@@ -96,5 +98,10 @@ class App extends Model
     public static function findByAttribute(mixed $value, string $attribute = 'id') : self|null
     {
         return self::query()->where($attribute , $value)->first();
+    }
+
+    public function subscriptions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 }
