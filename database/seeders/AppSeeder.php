@@ -14,6 +14,6 @@ class AppSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\App::factory(500)->create();
+        \App\Models\App::factory(100)->create();
     }
 }

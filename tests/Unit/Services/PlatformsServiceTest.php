@@ -5,14 +5,11 @@ namespace Services;
 use App\Platforms\Providers\AndroidPlatform;
 use App\Services\PlatformsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
 use Tests\TestCase;
 
 class PlatformsServiceTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testIsValidProvider()
     {
         $this->assertTrue(PlatformsService::isValidProvider(AndroidPlatform::class));

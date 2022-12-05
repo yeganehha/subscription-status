@@ -51,12 +51,12 @@ class AppsService
      * Create new App.
      *
      * @param string $uid
-     * @param string $name
+     * @param string|null $name
      * @param int|Platform $platform
      * @return App
      * @throws \Throwable
      */
-    public static function insert(string $uid, string $name, int|Platform $platform) : App
+    public static function insert(string $uid, string|null $name, int|Platform $platform) : App
     {
         if (self::isUidExist($uid))
             throw new InvalidArgumentException("UID [{$uid}] exist in database!");
@@ -73,12 +73,12 @@ class AppsService
      *
      * @param int|App $app
      * @param string $uid
-     * @param string $name
+     * @param string|null $name
      * @param int|Platform $platform
      * @return App
      * @throws \Throwable
      */
-    public static function update(int|App $app, string $uid, string $name, int|Platform $platform): App
+    public static function update(int|App $app, string $uid, string|null $name, int|Platform $platform): App
     {
         if ( is_int($app) )
             $app = self::getAppByID($app);
@@ -113,7 +113,7 @@ class AppsService
             $status = ucfirst(strtolower($status));
             $reflection = new \ReflectionEnum(StatusEnum::class);
             if ( $reflection->hasConstant( $status ) ) {
-                $status = StatusEnum::${$status};
+                $status =  $reflection->getConstant($status);
             } else
                 throw new InvalidArgumentException("[{$status}] is not valid status!");
         }

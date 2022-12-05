@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\StatusEnum;
+use App\Models\Platform;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,10 +29,11 @@ class AppFactory extends Factory
                 $status = StatusEnum::Expired;
                 break;
         }
+        $platforms = Platform::all('id')->pluck('id');
         return [
             'uid' => fake()->unique()->domainName(),
             'name' => fake()->name(),
-            'platform_id' => rand(1,2),
+            'platform_id' => $platforms->random(1)[0],
             'status' => $status
         ];
     }

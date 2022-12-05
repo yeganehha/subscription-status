@@ -40,13 +40,13 @@ class App extends Model
     /**
      * insert  new platform
      * @param string $uid
-     * @param string $name name of platform
+     * @param string|null $name name of platform
      * @param int $platform_id
      * @param StatusEnum $status
      * @return self
      * @throws \Throwable
      */
-    public static function insert(string $uid, string $name, int $platform_id, StatusEnum $status): self
+    public static function insert(string $uid, string|null $name, int $platform_id, StatusEnum $status): self
     {
         $platform = new self();
         $platform->uid = $uid;
@@ -60,12 +60,12 @@ class App extends Model
     /**
      * update App
      * @param string $uid
-     * @param string $name
+     * @param string|null $name
      * @param int $platform_id
      * @return $this
      * @throws \Throwable
      */
-    public function editInformation(string $uid, string $name, int $platform_id): self
+    public function editInformation(string $uid, string|null $name, int $platform_id): self
     {
         $this->uid = $uid;
         $this->name = $name;
