@@ -38,6 +38,11 @@ class RunsQuery extends Query
                 'description' => 'search special Day.',
                 'type' => Type::string()
             ],
+            'status' => [
+                'name' => 'status',
+                'description' => 'search special status.',
+                'type' => Type::string()
+            ],
             'limit' => [
                 'name' => 'limit',
                 'description' => 'How much item show per each page.( between 10 & 50. default: 10)',
@@ -53,6 +58,6 @@ class RunsQuery extends Query
 
     public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        return CheckService::searchRuns($args['id'] ?? null , $args['date'] ?? null, false,$args['page'] ?? 1, $args['limit'] ?? 10);
+        return CheckService::searchRuns($args['id'] ?? null , $args['date'] ?? null, false,$args['status'] ?? null ,$args['page'] ?? 1, $args['limit'] ?? 10);
     }
 }

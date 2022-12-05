@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Queries;
 
+use App\Enums\RunStatusEnum;
 use App\Services\CheckService;
 use App\Services\PlatformsService;
 use Closure;
@@ -17,7 +18,7 @@ class RunQuery extends Query
 {
     protected $attributes = [
         'name' => 'lastCheck',
-        'description' => 'Rounds of checking application\'s subscription (with search).'
+        'description' => 'Last Finished Round of checking application\'s subscription.'
     ];
 
     public function type(): Type
@@ -27,6 +28,6 @@ class RunQuery extends Query
 
     public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        return CheckService::searchRuns(null ,  null, true , false);
+        return CheckService::searchRuns(null ,  null, true ,RunStatusEnum::Finished, false);
     }
 }

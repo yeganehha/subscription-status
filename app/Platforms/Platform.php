@@ -2,9 +2,11 @@
 
 namespace App\Platforms;
 
+use App\Models\App;
+
 abstract class Platform implements PlatformInterface
 {
-    protected $app;
+    protected App $app;
 
     /**
      * system check repeatedly status when get any error while check status.
@@ -12,16 +14,16 @@ abstract class Platform implements PlatformInterface
      *
      * @return int number of seconds for delay and re-check
      */
-    public static function reCheckStatusOnErrorOccurred():int
+    public function reCheckStatusOnErrorOccurred():int
     {
         return 0;
     }
 
     /**
      * set application that should be checked.
-     * @param $app
+     * @param App $app
      */
-    public function setApp($app) : void {
+    public function setApp(App $app) : void {
         $this->app = $app;
     }
 }

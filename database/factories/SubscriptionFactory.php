@@ -30,7 +30,18 @@ class SubscriptionFactory extends Factory
                 $status = StatusEnum::Expired;
                 break;
         }
-        return compact('status');
+        switch (rand(1,3)) {
+            case 1:
+                $last_status = StatusEnum::Active;
+                break;
+            case 2:
+                $last_status = StatusEnum::Pending;
+                break;
+            default:
+                $last_status = StatusEnum::Expired;
+                break;
+        }
+        return compact('status' , 'last_status');
     }
 
     public function appAndRun(int $app_id ,int $run_id)

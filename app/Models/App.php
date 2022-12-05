@@ -99,6 +99,7 @@ class App extends Model
                 'resolve' => function($root, $args) {
                     return CheckService::searchSubscription(
                         $args['id'] ?? null,
+                        null,
                         $args['status'] ?? null,
                         $root->id,null,$args['page'] ?? 1 , $args['limit'] ?? 10);
                 },

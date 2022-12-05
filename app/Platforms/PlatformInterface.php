@@ -3,6 +3,7 @@
 namespace App\Platforms;
 
 use App\Enums\StatusEnum;
+use App\Models\App;
 
 interface PlatformInterface
 {
@@ -12,7 +13,7 @@ interface PlatformInterface
      *
      * @return int number of seconds for delay and re-check
      */
-    public static function reCheckStatusOnErrorOccurred():int;
+    public function reCheckStatusOnErrorOccurred():int;
 
     /**
      * Process to check status of app in platform.
@@ -24,7 +25,7 @@ interface PlatformInterface
 
     /**
      * set application that should be checked.
-     * @param $app
+     * @param App $app
      */
-    public function setApp($app) : void;
+    public function setApp(App $app) : void;
 }

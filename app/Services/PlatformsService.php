@@ -138,13 +138,15 @@ class PlatformsService
      * @param string|null $name
      * @param int|bool|null $page
      * @param int|null $perPage
-     * @return LengthAwarePaginator
+     * @return Collection|LengthAwarePaginator
      */
-    public static function searchPlatforms(int|null|string $id = null,string|null $name = null,int|bool|null $page,int|null $perPage = 10): LengthAwarePaginator
+    public static function searchPlatforms(int|null|string $id = null,string|null $name = null,int|bool|null $page,int|null $perPage = 10): Collection|LengthAwarePaginator
     {
         if ( is_string($id) )
             $id = (int)$id;
-        $page = max($page , 1);
+
+        if ( $page !== false)
+            $page = max($page , 1);
         $perPage = min($perPage , 50);
         $perPage = max($perPage , 10);
         return Platform::getActivePlatforms($id ,$name,$page,$perPage);

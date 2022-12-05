@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RunStatusEnum;
 use App\Services\AppsService;
 use App\Services\CheckService;
 use GraphQL\Type\Definition\Type;
@@ -17,6 +18,8 @@ use Rebing\GraphQL\Support\Facades\GraphQL;
 /**
  * @property int $id
  * @property int expired_count
+ * @property int waiting_task
+ * @property RunStatusEnum status
  * @property string name
  * @property Collection subscriptions
  * @property Carbon $created_at
@@ -27,11 +30,15 @@ class Run extends Model
     use HasFactory;
 
     protected $fillable = [
-        'expired_count'
+        'expired_count',
+        'waiting_task',
+        'status'
     ];
 
     protected $casts = [
-        'expired_count' => 'int'
+        'expired_count' => 'int',
+        'waiting_task' => 'int',
+        'status' => RunStatusEnum::class
     ];
 
     protected $appends = [
@@ -52,6 +59,13 @@ class Run extends Model
             'expired_count' => [
                 'type' => Type::int(),
                 'description' => 'Number of application that get Expire Status in that\'s run.'
+            ],
+            'status' => [
+                'type' => Type::string(),
+                'description' => 'Status of round',
+                'resolve' => function($root, $args) {
+                    return RunStatusEnum::toString($root->status);
+                }
             ],
             'subscriptions' => [
                 'type'          => GraphQL::paginate('Subscription'),
@@ -81,6 +95,7 @@ class Run extends Model
                 'resolve' => function($root, $args) {
                     return CheckService::searchSubscription(
                         $args['id'] ?? null,
+                        null,
                         $args['status'] ?? null,
                         null,$root->id,$args['page'] ?? 1 , $args['limit'] ?? 10);
                 },
@@ -103,11 +118,12 @@ class Run extends Model
      * @param int|null $id
      * @param Carbon|null $date
      * @param bool $last
+     * @param RunStatusEnum|null $status
      * @param int|bool|null $page
      * @param int|null $perPage
      * @return Collection|LengthAwarePaginator|Run
      */
-    public static function search(int|null $id, Carbon|null $date, bool $last, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator|Run
+    public static function search(int|null $id, Carbon|null $date, bool $last,RunStatusEnum|null $status = null, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator|Run
     {
         $result = self::query()
             ->when($id , function ($query) use ($id){
@@ -115,12 +131,41 @@ class Run extends Model
             })
             ->when($date , function ($query) use ($date){
                 $query->whereDate('created_at' , $date);
+            })
+            ->when($status , function ($query) use ($status){
+                $query->whereDate('status' , $status);
             })->latest();
         if ( $last )
             return $result->limit(1)->first();
         if ( $page === false )
             return  $result->get();
         return $result->paginate($perPage,['*'],'page',$page);
+    }
+
+    public function incrementExpiredApps(): int
+    {
+        self::query()->where('id',$this->id)
+            ->increment('expired_count');
+        $this->expired_count++;
+        return  $this->expired_count;
+    }
+
+    public function decrementTask() :int
+    {
+        self::query()->where('id',$this->id)
+            ->decrement('waiting_task');
+        $this->waiting_task--;
+        return  $this->waiting_task;
+    }
+
+    /**
+     * @return void
+     * @throws \Throwable
+     */
+    public function finish(): void
+    {
+        $this->status = RunStatusEnum::Finished;
+        $this->saveOrFail();
     }
 
     /**
@@ -137,12 +182,15 @@ class Run extends Model
 
     /**
      * insert  new Round of run
+     * @param int $numberOFTask
      * @return self
      * @throws \Throwable
      */
-    public static function insert(): self
+    public static function insert(int $numberOFTask): self
     {
         $platform = new self();
+        $platform->waiting_task = $numberOFTask;
+        $platform->status = RunStatusEnum::Pending;
         $platform->saveOrFail();
         return $platform;
     }
