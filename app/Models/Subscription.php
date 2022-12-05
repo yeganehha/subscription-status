@@ -28,6 +28,7 @@ class Subscription extends Model
     protected $fillable = [
         'app_id',
         'run_id',
+        'last_status',
         'status',
     ];
 
@@ -36,6 +37,7 @@ class Subscription extends Model
     protected $casts = [
         'app_id' => 'int',
         'run_id' => 'int',
+        'last_status' => StatusEnum::class,
         'status' => StatusEnum::class
     ];
 

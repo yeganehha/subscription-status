@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('app_id')->on('apps')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('run_id');
             $table->foreign('run_id')->on('runs')->references('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('last_status' , ['active' , 'expired' , 'pending']);
             $table->enum('status' , ['active' , 'expired' , 'pending']);
         });
     }

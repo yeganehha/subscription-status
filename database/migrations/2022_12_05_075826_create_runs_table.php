@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('runs', function (Blueprint $table) {
             $table->id();
             $table->integer('expired_count')->default(0);
+            $table->integer('waiting_task')->default(0);
+            $table->enum('status' , ['finished' , 'pending'])->default('pending');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RunStatusEnum;
 use App\Services\AppsService;
 use App\Services\CheckService;
 use GraphQL\Type\Definition\Type;
@@ -27,11 +28,15 @@ class Run extends Model
     use HasFactory;
 
     protected $fillable = [
-        'expired_count'
+        'expired_count',
+        'waiting_task',
+        'status'
     ];
 
     protected $casts = [
-        'expired_count' => 'int'
+        'expired_count' => 'int',
+        'waiting_task' => 'int',
+        'status' => RunStatusEnum::class
     ];
 
     protected $appends = [
@@ -121,6 +126,12 @@ class Run extends Model
         if ( $page === false )
             return  $result->get();
         return $result->paginate($perPage,['*'],'page',$page);
+    }
+
+    public function incremente(): int
+    {
+        return self::query()->where('id',$this->id)
+            ->increment('expired_count');
     }
 
     /**

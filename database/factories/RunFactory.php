@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\RunStatusEnum;
 use App\Models\App;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,8 @@ class RunFactory extends Factory
         $allApps = App::query()->count();
         return [
             'expired_count' => rand(0,$allApps),
+            'waiting_task' => 0,
+            'status' => RunStatusEnum::Finished,
             'created_at' => fake()->dateTimeThisYear(),
         ];
     }
