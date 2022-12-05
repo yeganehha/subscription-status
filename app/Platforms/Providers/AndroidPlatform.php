@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\App;
 
 class AndroidPlatform extends \App\Platforms\Platform
 {
+    public static $handler = null ;
+
     /**
      * system check repeatedly status when get any error while check status.
      * this method get numbers of seconds for delay and re-check
@@ -17,7 +19,7 @@ class AndroidPlatform extends \App\Platforms\Platform
      */
     public function reCheckStatusOnErrorOccurred(): int
     {
-        return parent::reCheckStatusOnErrorOccurred();
+        return 1 * 60 * 60;
     }
 
     /**
@@ -37,6 +39,6 @@ class AndroidPlatform extends \App\Platforms\Platform
         $request = $client->request("GET",$appUID.'/check',$options);
         $body = $request->getBody()->getContents();
         $status = json_decode($body);
-        return StatusEnum::getFromString($status->subscription);
+        return StatusEnum::getFromString($status->status);
     }
 }

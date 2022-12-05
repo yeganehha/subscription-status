@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\App;
 
 class IOSPlatform extends \App\Platforms\Platform
 {
+
+    public static $handler = null ;
+
     /**
      * system check repeatedly status when get any error while check status.
      * this method get numbers of seconds for delay and re-check
@@ -17,7 +20,7 @@ class IOSPlatform extends \App\Platforms\Platform
      */
     public function reCheckStatusOnErrorOccurred(): int
     {
-        return parent::reCheckStatusOnErrorOccurred();
+        return 2 * 60 * 60;
     }
 
     /**
