@@ -8,6 +8,8 @@ abstract class Platform implements PlatformInterface
 {
     protected App $app;
 
+    public static $handler = null ;
+
     /**
      * system check repeatedly status when get any error while check status.
      * this method get numbers of seconds for delay and re-check

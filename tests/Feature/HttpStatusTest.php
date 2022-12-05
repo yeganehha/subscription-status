@@ -12,10 +12,10 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function test_the_application_returns_a_successful_response()
+    public function test_the_application_returns_a_successful_response_on_api()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(302);
+        $response = $this->get('/api/document/graphiql');
+        $response = $this->get('/api/graphql');
+        $response->assertStatus(200);
     }
 }

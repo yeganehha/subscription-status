@@ -3,6 +3,9 @@
 namespace App\Platforms\Providers;
 
 use App\Enums\StatusEnum;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\App;
 
 class IOSPlatform extends \App\Platforms\Platform
 {
@@ -21,10 +24,19 @@ class IOSPlatform extends \App\Platforms\Platform
      * Process to check status of app in platform.
      *
      * @return StatusEnum
+     * @throws GuzzleException
      */
     public function getStatus(): StatusEnum
     {
         $appUID = $this->app->uid;
-        return StatusEnum::Active;
+        $config['base_uri'] = 'https://www.apple.com/app-store/';
+        if (App::runningUnitTests() and self::$handler != null )
+            $config['handler']  = self::$handler;
+        $client = new Client($config);
+        $options['Accept'] = 'application/json';
+        $request = $client->request("GET",$appUID.'/subscription/check',$options);
+        $body = $request->getBody()->getContents();
+        $status = json_decode($body);
+        return StatusEnum::getFromString($status->subscription);
     }
 }
