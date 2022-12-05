@@ -175,7 +175,6 @@ class CheckService
         $waitTask = $round->decrementTask();
         Subscription::insert($app->id,$round->id,$app->status,$status);
         $app->setStatus($status);
-
         if ( $waitTask == 0 and $round->status == RunStatusEnum::Pending)
             self::finish($round);
         DB::commit();
@@ -191,7 +190,7 @@ class CheckService
      */
     private static function addApplication(App $app , Run $round , int $delay = 0): void
     {
-        dispatch(new CheckApplicationJob($app , $round))->delay($delay);
+        dispatch(new CheckApplicationJob($app , $round))->delay(now()->addSeconds($delay));
     }
 
     /**
@@ -201,8 +200,8 @@ class CheckService
     {
         $subscriptions = self::searchSubscription(
             null,
-            StatusEnum::getFromString( config('subscription.email_when.from' , StatusEnum::Active) ),
-            StatusEnum::getFromString( config('subscription.email_when.to' , StatusEnum::Pending) ),
+            config('subscription.email_when.from' , StatusEnum::Active) ,
+            config('subscription.email_when.to' , StatusEnum::Expired) ,
             null,
             $run->id,
             false);
