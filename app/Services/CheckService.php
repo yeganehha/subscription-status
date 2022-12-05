@@ -211,6 +211,6 @@ class CheckService
         if ($subscriptions->count() == 0 ) {
             $run->finish();
         } else
-            dispatch(new SendEmailJob($subscriptions->pluck('app_id') , config('subscription') ));
+            dispatch(new SendEmailJob($subscriptions->pluck('app_id') , $run, config('subscription') ));
     }
 }

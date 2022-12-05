@@ -1,4 +1,4 @@
-<div style="margin-left: 25px; margin-top:150px; margin-right: 25px; ">
+<div style="margin-left: 25px; margin-top:60px; margin-right: 25px; ">
     <div>
         List of Application that status change from "<strong>{{ $from_status }}</strong>" to "<strong>{{ $to_status }}</strong>" :
     </div>

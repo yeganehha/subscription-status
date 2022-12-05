@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\ExpiredMail;
+use App\Models\Run;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,16 +19,18 @@ class SendEmailJob implements ShouldQueue
 
     public array|null $config ;
     public Collection $apps_id ;
+    public Run $run ;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Collection $apps_id , array|null $config = null)
+    public function __construct(Collection $apps_id , Run $run , array|null $config = null)
     {
         $this->config = $config;
         $this->apps_id = $apps_id;
+        $this->run = $run;
     }
 
     /**
@@ -37,7 +40,7 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-
         Mail::to($this->config['email']['to'])->send(new ExpiredMail($this->apps_id,$this->config));
+        $this->run->finish();
     }
 }
