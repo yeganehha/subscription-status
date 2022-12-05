@@ -30,16 +30,29 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped">
+                            @foreach($graphQls as $graphql)
                             <tr>
                                 <td>
                                     <strong>Graphql</strong>
-                                    <a href="{{ route('graphql.graphiql') }}" target="_blank">graphiql</a>
-                                    <a href="{{ route('graphql') }}" target="_blank">Execute</a>
+                                    <a href="{{ route('graphql.graphiql' , ['query' => $graphql['query']]) }}" target="_blank" class="mx-3">graphiql</a>
+                                    <a href="{{ route('graphql' , ['query' => $graphql['query']]) }}" target="_blank">Execute</a>
                                     <div>
-                                        List subscription of special app
+                                        {{ $graphql['name'] }}
                                     </div>
                                 </td>
                             </tr>
+                            @endforeach
+                            @foreach($restfuls as $restful)
+                            <tr>
+                                <td>
+                                    <strong>Restful</strong>
+                                    <a href="{{ $restful['link'] }}" target="_blank" class="mx-3">Execute</a>
+                                    <div>
+                                        {{ $restful['name'] }}
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>

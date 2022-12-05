@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group([ 'prefix' =>'rest' ,  'as' => 'api'] , function (){
+Route::group([ 'prefix' =>'rest' ,  'as' => 'api.'] , function (){
     Route::get('platforms' , [ \App\Http\Controllers\Api\IndexController::class , 'platforms'])
         ->name('platforms');
     Route::get('platforms/{platform}/apps' , [ \App\Http\Controllers\Api\IndexController::class , 'apps'])
