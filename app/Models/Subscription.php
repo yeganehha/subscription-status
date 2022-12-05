@@ -114,6 +114,25 @@ class Subscription extends Model
         return $result->paginate($perPage,['*'],'page',$page);
     }
 
+    /**
+     * @param int $app_id
+     * @param int $run_id
+     * @param StatusEnum $lastStatus
+     * @param StatusEnum $status
+     * @return Subscription
+     * @throws \Throwable
+     */
+    public static function insert(int $app_id, int $run_id, StatusEnum $lastStatus, StatusEnum $status): self
+    {
+        $subscription = new self();
+        $subscription->status = $status;
+        $subscription->last_status = $lastStatus;
+        $subscription->run_id = $run_id;
+        $subscription->app_id = $app_id;
+        $subscription->saveOrFail();
+        return $subscription;
+    }
+
     public function run(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Run::class);

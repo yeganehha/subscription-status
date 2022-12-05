@@ -142,10 +142,26 @@ class Run extends Model
         return $result->paginate($perPage,['*'],'page',$page);
     }
 
-    public function incremente(): int
+    public function incrementExpiredApps(): int
     {
         return self::query()->where('id',$this->id)
             ->increment('expired_count');
+    }
+
+    public function decrementTask() :int
+    {
+        return self::query()->where('id',$this->id)
+            ->decrement('waiting_task');
+    }
+
+    /**
+     * @return void
+     * @throws \Throwable
+     */
+    public function finish(): void
+    {
+        $this->status = RunStatusEnum::Finished;
+        $this->saveOrFail();
     }
 
     /**
@@ -162,6 +178,7 @@ class Run extends Model
 
     /**
      * insert  new Round of run
+     * @param int $numberOFTask
      * @return self
      * @throws \Throwable
      */
