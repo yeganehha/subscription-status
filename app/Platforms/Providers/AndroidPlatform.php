@@ -50,8 +50,9 @@ class AndroidPlatform extends \App\Platforms\Platform
                     $status = "expired";
                     break;
             }
+            $httpCode = rand(1,3) != 1 ? 200 : 500;
             $mock = new MockHandler([
-                new Response(rand(200,201),[], json_encode(compact('status'))),
+                new Response($httpCode,[], json_encode(compact('status'))),
             ]);
             $handlerStack = HandlerStack::create($mock);
             $config['handler']  = $handlerStack;

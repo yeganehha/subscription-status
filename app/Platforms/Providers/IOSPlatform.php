@@ -51,8 +51,9 @@ class IOSPlatform extends \App\Platforms\Platform
                     $subscription = "expired";
                     break;
             }
+            $httpCode = rand(1,3) != 1 ? 200 : 500;
             $mock = new MockHandler([
-                new Response(rand(200,201),[], json_encode(compact('subscription'))),
+                new Response($httpCode,[], json_encode(compact('subscription'))),
             ]);
             $handlerStack = HandlerStack::create($mock);
             $config['handler']  = $handlerStack;
