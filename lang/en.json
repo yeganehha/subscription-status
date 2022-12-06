@@ -1,0 +1,18 @@
+{
+    "platforms": "Platforms",
+    "platform": "Platform",
+    "apps": "Apps",
+    "app": "App",
+    "subscription": "Subscription history of :object",
+    "Subscriptions": "Subscriptions",
+    "runs": "Rounds Of check",
+    "run": "Round Of check",
+    "return_back": "Go back",
+    "submit": "Submit",
+    "add_new": "Add new :object",
+    "edit_object": "Edit :object",
+    "delete_object": "Delete :object",
+    "added": ":object Added successfully.",
+    "edited": ":object Edited successfully.",
+    "try_again": "Some error happened. please try-again!"
+}

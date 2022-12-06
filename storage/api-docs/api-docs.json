@@ -1,0 +1,302 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Application status checker",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/rest/platforms": {
+            "get": {
+                "tags": [
+                    "Platform"
+                ],
+                "summary": "Get List of all platforms",
+                "operationId": "53d4a85a5f802d519dd414d6f86bea91",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Id Of Special platform",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "full or part of platform name for search by name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page Number",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/api/rest/platforms/{platform}/apps": {
+            "get": {
+                "tags": [
+                    "Platform",
+                    "Application"
+                ],
+                "summary": "Get List of special platform's application",
+                "operationId": "59c62caa5976f69f30cba51cb24467ab",
+                "parameters": [
+                    {
+                        "name": "platform",
+                        "in": "path",
+                        "description": "Id Of platform",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Id Of Special app",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "uid",
+                        "in": "query",
+                        "description": "Unique Id Of Special app",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "full or part of platform name for search by name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "filter by status (status: active-pending-expired)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page Number",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/api/rest/platforms/{platform}/app/{app}/subscriptions": {
+            "get": {
+                "tags": [
+                    "Platform",
+                    "Application",
+                    "Subscription"
+                ],
+                "summary": "Get List of application subscription history",
+                "operationId": "d4be573c77fe613f5af7aa1000a42601",
+                "parameters": [
+                    {
+                        "name": "platform",
+                        "in": "path",
+                        "description": "Id Of platform",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "app",
+                        "in": "path",
+                        "description": "Id Of Application",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Id Of Special subscription",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "filter by status (status: active-pending-expired)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page Number",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/api/rest/rounds": {
+            "get": {
+                "tags": [
+                    "Round"
+                ],
+                "summary": "Get all rounds of checking subscription",
+                "operationId": "de20521dd50becc451bb56ba9e12e164",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Id Of Special Round",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page Number",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/api/rest/rounds/last": {
+            "get": {
+                "tags": [
+                    "Round"
+                ],
+                "summary": "Get last round of checking subscription",
+                "operationId": "1334a5095b99563f826cdc7ce3ade76a",
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    }
+                }
+            }
+        },
+        "/api/rest/rounds/{run}/subscriptions": {
+            "get": {
+                "tags": [
+                    "Round",
+                    "Subscription"
+                ],
+                "summary": "Get List of round subscription history",
+                "operationId": "a25737a3dba2d010fea2adeadd90e117",
+                "parameters": [
+                    {
+                        "name": "run",
+                        "in": "path",
+                        "description": "Id Of Round",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Id Of Special subscription",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "filter by status (status: active-pending-expired)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page Number",
+                        "required": false,
+                        "schema": {
+                            "type": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        }
+    }
+}
