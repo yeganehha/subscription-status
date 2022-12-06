@@ -89,9 +89,10 @@ class Subscription extends Model
      * @param int|null $run_id
      * @param int|bool|null $page
      * @param int|null $perPage
+     * @param array $with
      * @return Collection|LengthAwarePaginator
      */
-    public static function search(int|null $id, StatusEnum|null $lastStatus, StatusEnum|null $status, int|null $app_id, int|null $run_id, int|bool|null $page = false, int|null $perPage = null): Collection|LengthAwarePaginator
+    public static function search(int|null $id, StatusEnum|null $lastStatus, StatusEnum|null $status, int|null $app_id, int|null $run_id, int|bool|null $page = false, int|null $perPage = null, array $with = []): Collection|LengthAwarePaginator
     {
         $result = self::query()
             ->when($id , function ($query) use ($id){
@@ -108,6 +109,9 @@ class Subscription extends Model
             })
             ->when($run_id , function ($query) use ($run_id){
                 $query->where('run_id' , $run_id);
+            })
+            ->when($with != [] , function ($query) use ($with){
+                $query->with($with);
             })->orderByDesc('id');
         if ( $page === false )
             return  $result->get();

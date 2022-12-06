@@ -36,9 +36,10 @@ class CheckService
      * @param int|Run|string|null $run
      * @param int|bool|null $page
      * @param int|null $perPage
+     * @param array $with
      * @return Collection|LengthAwarePaginator
      */
-    public static function searchSubscription(int|null|string $id = null,string|StatusEnum|null $lastStatus = null,string|StatusEnum|null $status = null, int|App|string|null $app = null, int|Run|string|null $run = null, int|bool|null $page,int|null $perPage = 10)
+    public static function searchSubscription(int|null|string $id = null,string|StatusEnum|null $lastStatus = null,string|StatusEnum|null $status = null, int|App|string|null $app = null, int|Run|string|null $run = null, int|bool|null $page,int|null $perPage = 10, array $with = [])
     {
         if ( is_string($id) )
             $id = (int)$id;
@@ -68,7 +69,7 @@ class CheckService
             $page = max($page , 1);
         $perPage = min($perPage , 50);
         $perPage = max($perPage , 10);
-        return Subscription::search($id ,$lastStatus , $status , $app_id , $run_id ,$page,$perPage);
+        return Subscription::search($id ,$lastStatus , $status , $app_id , $run_id ,$page,$perPage ,$with);
     }
 
 
