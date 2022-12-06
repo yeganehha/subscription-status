@@ -23,7 +23,7 @@ class IOSPlatform extends \App\Platforms\Platform
      */
     public function reCheckStatusOnErrorOccurred(): int
     {
-        return 10 * 60;
+        return 2 * 60 * 60;
     }
 
     /**
